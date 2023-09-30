@@ -1,4 +1,3 @@
-import './App.css'
 import { VideoCall } from './components'
 
 function App() {
