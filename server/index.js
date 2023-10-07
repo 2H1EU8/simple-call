@@ -20,14 +20,7 @@ io.on('connection', (socket) => {
         socket.broadcast.emit("callEnded")
       });
 
-    socket.on('callOffer', data => {
-      console.log('New offer', data);
-      io.to(data.userToCall).emit('callOffer', {signal: data.signalData, from: data.from, name: data.name});
-    })
-
-    socket.on('callAnswer', data => {
-      io.to(data.to).emit("callAccepted", data.signal);
-    })
+    
   });
 
 server.listen(8080, () => {
