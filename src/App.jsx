@@ -7,6 +7,7 @@ const socket = io.connect("http://localhost:8080");
 function App() {
   
   const [id, setId] = useState('');
+  const [socketId, setSocketId] = useState('');
   const [idToCall, setIdToCall] = useState('');
   const [name, setName] = useState('');
   const [caller, setCaller] = useState('');
@@ -32,6 +33,10 @@ function App() {
 
     peer.on('open', (id) => {
       setId(id);
+    })
+
+    socket.on('me', (id) => {
+      setSocketId(id);
     })
 
     var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -87,6 +92,14 @@ function App() {
     connectionRef.current.destroy();
   }
 
+  const connectSocket = (socketID) => {
+    socket.emit('makeCall', {
+      to: socketID, 
+      data: id,
+      from: socketID
+    });
+  }
+
   return (
 
     <>
@@ -95,12 +108,13 @@ function App() {
       <video ref={remoteVideoRef} autoPlay/>
       {/* <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='name'/> */}
       <p>{id}</p>
+      <p>Socket {socketId}</p>
       <input type="text" value={idToCall} onChange={(e) => setIdToCall(e.target.value)} placeholder='id'/>
       <div className="control-btn">
         { callAccepted && !callEnded ? 
           <button onClick={() => endCall}>End</button>
           :
-          <button onClick={() => callOffer(idToCall)}>Call</button>
+          <button onClick={() => connectSocket(idToCall)}>Call</button>
         }
         {idToCall}
       </div>
