@@ -14,15 +14,24 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('New user connected', socket.id);
 
-    socket.emit("me", socket.id)
+    socket.emit('me', socket.id)
 
     socket.on('disconnect', () => {
         socket.broadcast.emit("callEnded")
       });
     
     socket.on('makeCall', (data) => {
-      io.to(data.to).emit()
-    })
+      io.to(data.to).emit('callOffer', {
+        from: data.from,
+        name: data.name,
+        signal: data.signal,
+        to: data.to
+      });
+    });
+
+    // socket.on('answerCall', (data) => {
+    //   io.to(data.to).emit('acceptCall', data.signal);
+    // });
     
   });
 
